@@ -10,7 +10,6 @@
 #include <stdint.h>
 #include <mos_api.h>
 
-
 typedef struct {
     uint32_t time;
     uint8_t vpd_pflags;
@@ -76,12 +75,17 @@ typedef union {
 static char *up_str = "up";
 static char *down_str = "down";
 
-int main( void )
+int _main( void )
 {
 	printf("Experiments with VDP protocol bytes:\n\n");
-	printf("Press ESC key to quit\n");
 
 	volatile SYSVAR_EXT *sv = (SYSVAR_EXT *)mos_sysvars();
+
+    printf("Sysvar address:               %p\n", sv);
+    printf("VDP protocol control address: %p\n", &(sv->vdp_prot_ctrl));
+    printf("VDP protocol data address:    %p\n", &(sv->vdp_prot_data));
+
+    printf("Press ESC key to quit\n");
 
 	uint24_t ctrl;
 	KEY_EVENT key_event, prev_key_event;
@@ -99,7 +103,7 @@ int main( void )
 					key_event.code, key_event.mods, up_down );
 			prev_key_event = key_event;
 		}
-	} while( sv->vdp_protocol_data[1] != '\x7d');
+	} while( key_event.code != '\x7d');
 
 	return 0;
 } 
